@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<widget xmlns = "http://www.w3.org/ns/widgets"
+    xmlns:gap = "http://phonegap.com/ns/1.0"
+    id        = "com.totalindo.dailydzikr"
+    version   = "1.0.0">
+
+<name>BMH</name>
+
+<description>
+BMH Mobile Apps
+</description>
+
+<author href="https://franzramadhan.com" email="franz.ramadhan@gmail.com">
+Frans Caisar Ramadhan
+</author>
+
+<gap:platform name="ios" />
+<gap:platform name="android" />
+<gap:platform name="winphone" />
+
+
+</widget>
