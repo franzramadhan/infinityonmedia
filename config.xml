@@ -18,5 +18,11 @@ Frans Caisar Ramadhan
 <gap:platform name="android" />
 <gap:platform name="winphone" />
 
+<icon src="assets/icon/hdpi.png" density="hdpi" />
+<icon src="assets/icon/mdpi.png" density="mdpi" />
+<icon src="assets/icon/xxhdpi.png" density="xxhdpi" />
+<icon src="assets/icon/xhdpi.png" density="xhdpi" />
+<icon src="assets/icon/xxxhdpi.png" density="xxxhdpi" />
+
 
 </widget>

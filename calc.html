@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <title></title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+
+
+    <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+    <link rel="stylesheet" href="assets/css/jquery.mobile-1.4.3.min.css" />
+    <script src="assets/js/jquery-1.11.1.min.js"></script>
+    <script src="assets/js/jquery.mobile-1.4.3.min.js"></script>
+    <style>
+        body {
+            background: url(assets/images/bg.png) repeat fixed;
+            background-size:auto;
+        }
+
+        .ui-content, .ui-btn {
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+<!--calc-->
+
+
+<div id="calc" data-role="page" class="jqm-demos ui-responsive-panel">
+    <div data-role="header">
+        <h1>Kalkulator Zakat</h1>
+        <a href="#nav-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+    </div>
+    <div role="main" class="ui-content jqm-content jqm-fullwidth">
+
+    </div>
+    <div data-role="panel" data-display="push" data-theme="b" id="nav-panel">
+        <ul data-role="listview">
+            <li data-icon="delete"><a href="#" data-rel="close">Close menu</a></li>
+            <li><a href="index.html" data-transition="slide">Profil</a></li>
+            <li><a href="news.html" data-transition="slide">Berita</a></li>
+            <li><a href="zis.html" data-transition="slide">ZIS</a></li>
+            <li><a href="qurban.html" data-transition="slide">Qurban</a></li>
+            <li><a href="calc.html" data-transition="slide">Kalkulator Zakat</a></li>
+            <li><a href="donasi.html" data-transition="slide">Layanan Donatur</a></li>
+        </ul>
+    </div><!-- /panel -->
+</div>
+</body>
+</html>
