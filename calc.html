@@ -8,9 +8,7 @@
 
 
     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
-    <link rel="stylesheet" href="assets/css/jquery.mobile-1.4.3.min.css" />
     <script src="assets/js/jquery-1.11.1.min.js"></script>
-    <script src="assets/js/jquery.mobile-1.4.3.min.js"></script>
     <script>
 
         var regex = new Array(),
@@ -63,8 +61,23 @@
             document.form1.elements[b].value = toformat;
         }
 
+        var deviceReadyDeferred = $.Deferred();
+        var jqmReadyDeferred = $.Deferred();
 
-        $( document ).ready(function() {
+        document.addEventListener("deviceReady", deviceReady, false);
+
+        function deviceReady() {
+            deviceReadyDeferred.resolve();
+        }
+
+        $(document).on("mobileinit", function () {
+            jqmReadyDeferred.resolve();
+        });
+
+        $.when(deviceReadyDeferred, jqmReadyDeferred).then(doWhenBothFrameworksLoaded);
+
+        function doWhenBothFrameworksLoaded() {
+
             // Fungsi untuk nisab penghasilan
             function hitung_nisab() {
                 var gaji_perbulan = $('#gaji').val();
@@ -171,11 +184,10 @@
 
             });
             //End jquery kalkulator
-        });
-
-
-
+        }
     </script>
+    <link rel="stylesheet" href="assets/css/jquery.mobile-1.4.3.min.css" />
+    <script src="assets/js/jquery.mobile-1.4.3.min.js"></script>
     <style>
         body {
             background: url(assets/images/bg.png) repeat fixed;
