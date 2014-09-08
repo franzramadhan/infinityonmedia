@@ -11,6 +11,171 @@
     <link rel="stylesheet" href="assets/css/jquery.mobile-1.4.3.min.css" />
     <script src="assets/js/jquery-1.11.1.min.js"></script>
     <script src="assets/js/jquery.mobile-1.4.3.min.js"></script>
+    <script>
+
+        var regex = new Array(),
+                it;
+
+        function clean_it(it) {
+            regex[0] = /\./ig;
+            regex[1] = /\,/ig;
+            it = it.replace(regex[0], "");
+            it = it.replace(regex[1], "");
+            return it;
+        }
+
+        var num, LNum, x, fnum, snums, snumx, snumsr, snumr;
+        //Fungsi convert dari clean to number format
+        function rubah(num) {
+            num = String(num);
+            LNum = num.length;
+            if (LNum > 3) {
+                fnum = parseInt(LNum / 3, 10);
+                if ((LNum % 3) === 0) {
+                    fnum--;
+                }
+                regex[2] = /(.+)(\d{3}$)/ig;
+                for (x = 1; x <= fnum; x++) {
+                    if (x == 1) {
+                        snums = num.replace(regex[2], "$2");
+                        snumx = num.replace(regex[2], "$1");
+                        snumsr = "." + snums;
+                    } else {
+                        snums = snumx.replace(regex[2], "$2");
+                        snumx = snumx.replace(regex[2], "$1");
+                        snumsr = "." + snums + snumsr;
+                    }
+                }
+                snumr = snumx + snumsr;
+            } else {
+                snumr = num;
+            }
+            return snumr;
+        }
+
+        var b, toformat;
+        //Fungsi clean and format number
+        function formated(b) {
+            toformat = document.form1.elements[b].value;
+            toformat = clean_it(toformat);
+            toformat = parseInt(toformat, 10);
+            toformat = rubah(toformat);
+            document.form1.elements[b].value = toformat;
+        }
+
+
+        $( document ).ready(function() {
+            // Fungsi untuk nisab penghasilan
+            function hitung_nisab() {
+                var gaji_perbulan = $('#gaji').val();
+                var penghasilan_lain = $('#gaji_tambahan').val();
+                var hutang = $('#kebutuhan').val();
+
+                pendapatan = parseInt(gaji_perbulan) + parseInt(penghasilan_lain) - parseInt(hutang);
+                besar_nishab = parseInt(522 * 6500);
+
+                if (pendapatan > besar_nishab) {
+                    $('#wajib').text('WAJIB');
+                    jumlah_wajib_zakat = parseInt(0.025 * pendapatan);
+                } else {
+                    $('#wajib').text('TIDAK');
+                    jumlah_wajib_zakat = parseInt(0);
+                }
+
+                $('#jml_zakat_penghasilan').text(jumlah_wajib_zakat);
+            }
+
+            $('#gaji, #gaji_tambahan, #kebutuhan').keyup(function () {
+                hitung_nisab();
+            });
+
+            //Jquery kalkulator
+            //Fungsi untuk membersihkan (.)
+
+            //Jquery for kalkulator
+            $('#gaji, #gaji_tambahan, #kebutuhan, #hrg_beras, #hrg_emas, #hutang_tempo , .sum_maal').keyup(function () {
+
+                //Perhitungan Zakat penghasilan
+                gaji_saya = $('#gaji').val();
+                penghasilan_lain = $('#gaji_tambahan').val();
+                hutang =  $('#kebutuhan').val();
+
+                c_gaji_saya = clean_it(gaji_saya);
+                c_penghasilan_lain = clean_it(penghasilan_lain);
+                c_hutang = clean_it(hutang);
+
+                total1 = parseInt(c_gaji_saya) + parseInt(c_penghasilan_lain) - parseInt(c_hutang);
+                total2 = rubah(total1);
+                $('#penghasilan').val(total2);
+
+                //Perhitungan nisab zakat penghasilan
+                harga_beras = $('#hrg_beras').val();
+                c_gaji_saya = clean_it(harga_beras);
+                besar_nishab = parseInt(522 * c_gaji_saya);
+                c_besar_nishab = rubah(besar_nishab);
+                $('#nisab_zakat_penghasilan').val(c_besar_nishab);
+
+                if (besar_nishab < total1) {
+                    $('#wajib').val('YA');
+                    jumlah_wajib_zakat = parseInt(0.025 * total1);
+                    c_jumlah_wajib_zakat = rubah(jumlah_wajib_zakat);
+                } else {
+                    $('#wajib').val('TIDAK');
+                    jumlah_wajib_zakat = parseInt(0);
+                    c_jumlah_wajib_zakat = jumlah_wajib_zakat;
+                }
+                $('#jml_zakat_penghasilan').val(c_jumlah_wajib_zakat);
+                $('#zakat_perbulan').val(c_jumlah_wajib_zakat);
+
+                //Perhitungan Zakat Maal
+                var total = 0;
+                $(".sum_maal").each(function () {
+                    total += parseInt(clean_it($(this).val()));
+                });
+                c_total = rubah(total);
+                $('#jml_harta').val(c_total);
+
+                hutang_tempo = $('#hutang_tempo').val();
+                c_hutang_tempo = clean_it(hutang_tempo);
+                jumlah_zakat_harta = total - c_hutang_tempo;
+                c_jumlah_zakat_harta = rubah(jumlah_zakat_harta);
+                $('#jml_harta_zakat').val(c_jumlah_zakat_harta);
+                //End Perhitungan Zakat Maal
+
+                //Perhitungan bayar Zakat Maal
+                //----------------------------
+                harga_emas = $('#hrg_emas').val();
+                c_harga_emas = clean_it(harga_emas);
+                nisab_maal_pertahun = parseInt(85 * c_harga_emas);
+                c_nisab_maal_pertahun = rubah(nisab_maal_pertahun);
+                $('#nisab_zakat_maal').val(c_nisab_maal_pertahun);
+
+                if (nisab_maal_pertahun < jumlah_zakat_harta) {
+                    wajib_bayar_maal = 'YA';
+                    var wajib_bayar_maal_pertahun = parseInt(0.025 * total);
+                    var wajib_bayar_maal_perbulan = parseInt(wajib_bayar_maal_pertahun / 12);
+                } else {
+                    wajib_bayar_maal = 'TIDAK';
+                    wajib_bayar_maal_pertahun = parseInt('0');
+                    wajib_bayar_maal_perbulan = parseInt('0');
+                }
+                $('#wajib_maal').val(wajib_bayar_maal);
+                $('#jml_zakat_maal_thn').val(rubah(wajib_bayar_maal_pertahun));
+                $('#jml_zakat_maal_bln').val(rubah(wajib_bayar_maal_perbulan));
+                $('#zakat_maal_perbulan').val(rubah(wajib_bayar_maal_perbulan));
+
+                //RESUME
+                total_zakat_perbulan = jumlah_wajib_zakat + wajib_bayar_maal_perbulan;
+                c_total_zakat_perbulan = rubah(total_zakat_perbulan);
+                $('#total_zakat_perbulan').val(c_total_zakat_perbulan);
+
+            });
+            //End jquery kalkulator
+        });
+
+
+
+    </script>
     <style>
         body {
             background: url(assets/images/bg.png) repeat fixed;
@@ -32,6 +197,113 @@
         <a href="#nav-panel" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
     <div role="main" class="ui-content jqm-content jqm-fullwidth">
+
+        <form action="#" name="form1">
+
+            <h2>Penghasilan</h2>
+            <label for="gaji">Gaji per Bulan</label>
+            <input id="gaji" type="text" name="gaji" value="0"/>
+
+            <label for="gaji_tambahan">Penghasilan Tambahan per Bulan</label>
+            <input id="gaji_tambahan" type="text" name="gaji_tambahan" value="0"/>
+
+            <label for="kebutuhan">Kebutuhan per Bulan</label>
+            <input id="kebutuhan" type="text" name="kebutuhan" value="0"/>
+
+            <label for="penghasilan">Jumlah Penghasilan per Bulan</label>
+            <input id="penghasilan" type="text" name="penghasilan" value="0" disabled/>
+
+
+
+
+            <h2>Nisab Zakat Penghasilan</h2>
+            <p>Nisab adalah syarat jumlah minimum (ambang batas) harta yang dapat dikategorikan sebagai harta wajib zakat. Untuk penghasilan yang diwajibkan zakat adalah penghasilan yang berada diatas nisab. Nisab Zakat Penghasilan adalah setara 522 kg beras normal.</p>
+            <label for="hrg_beras">Harga Beras saat ini (dalam kg)</label>
+            <input id="hrg_beras" type="text" name="hrg_beras" value="6500"/>
+
+            <label for="nisab_zakat_penghasilan">Nisab Zakat Penghasilan per Bulan</label>
+            <input id="nisab_zakat_penghasilan" type="text" name="nisab_zakat_penghasilan" value="0" disabled/>
+
+            <label for="wajib">Wajib Bayar</label>
+            <input id="wajib" type="text" name="wajib" disabled/>
+
+            <label for="jml_zakat_penghasilan">Jumlah Zakat per Bulan</label>
+            <input id="jml_zakat_penghasilan" type="text" name="jml_zakat_penghasilan" value="0" disabled/>
+
+
+
+
+            <h2>Zakat Harta</h2>
+            <p>Untuk harta yang diwajibkan zakat adalah harta yang berjumlah diatas nisab. Nisab Zakat Harta (Maal) adalah setara dengan 85 gr emas 24 karat.</p>
+            <label for="harta_tabungan">Harta dalam bentuk Tabungan/ Giro/ Deposito</label>
+            <input id="harta_tabungan" type="text" class="sum_maal" name="harta_tabungan" value="0"/>
+
+            <label for="harta_logam">Harta dalam bentuk Logam Mulia (Emas/ Perak)</label>
+            <input id="harta_logam" type="text" class="sum_maal" name="harta_logam" value="0"/>
+
+            <label for="harta_surat">Harta dalam bentuk Surat Beharga</label>
+            <input id="harta_surat" type="text" class="sum_maal" name="harta_surat" value="0"/>
+
+            <label for="harta_properti">Harta dalam bentuk Properti</label>
+            <input id="harta_properti" type="text" class="sum_maal" name="harta_properti" value="0"/>
+
+            <label for="harta_kendaraan">Harta dalam bentuk Kendaraan</label>
+            <input id="harta_kendaraan" type="text" class="sum_maal" name="harta_kendaraan" value="0"/>
+
+            <label for="harta_antik">Harta dalam bentuk Koleksi Seni & Barang Antik</label>
+            <input id="harta_antik" type="text" class="sum_maal" name="harta_antik" value="0"/>
+
+            <label for="harta_stok">Harta dalam bentuk Stok Barang Dagangan</label>
+            <input id="harta_stok" type="text" class="sum_maal" name="harta_stok" value="0"/>
+
+            <label for="harta_lain">Harta dalam bentuk Lainnya</label>
+            <input id="harta_lain" type="text" class="sum_maal" name="harta_lain" value="0"/>
+
+            <label for="harta_piutang">Harta dalam bentuk Piutang Lancar</label>
+            <input id="harta_piutang" class="sum_maal" type="text" name="harta_piutang" value="0"/>
+
+            <label for="jml_harta">Jumlah Harta</label>
+            <input id="jml_harta" type="text" name="jml_harta" value="0" disabled/>
+
+            <label for="hutang_tempo">Hutang Jatuh Tempo Saat Membayar Kewajiban Zakat</label>
+            <input id="hutang_tempo" type="text" name="hutang_tempo" value="0"/>
+
+            <label for="jml_harta_zakat">Jumlah Harta yang Terhitung Zakat</label>
+            <input id="jml_harta_zakat" type="text" name="jml_harta_zakat" value="0" disabled/>
+
+
+
+            <h2>Nisab Zakat Harta (Maal)</h2>
+            <p>Untuk harta yang diwajibkan zakat adalah harta yang berjumlah diatas nisab. Nisab Zakat Harta (Maal) adalah setara dengan 85 gr emas 24 karat.</p>
+            <label for="hrg_emas">Harga Emas saat ini (dalam g)</label>
+            <input id="hrg_emas" type="text" name="hrg_emas" value="530000"/>
+
+            <label for="nisab_zakat_maal">Besarnya Nisab Zakat Maal per Tahun</label>
+            <input id="nisab_zakat_maal" type="text" name="nisab_zakat_maal" value="0" disabled/>
+
+            <label for="wajib_maal">Wajib Bayar Zakat Maal</label>
+            <input id="wajib_maal" type="text" name="wajib_maal" disabled/>
+
+            <label for="jml_zakat_maal_thn">Jumlah Zakat Maal per Tahun</label>
+            <input id="jml_zakat_maal_thn" type="text" name="jml_zakat_maal_thn" value="0" disabled/>
+
+            <label for="jml_zakat_maal_bln">Jumlah Zakat Maal per Bulan</label>
+            <input id="jml_zakat_maal_bln" type="text" name="jml_zakat_maal_bln" value="0" disabled/>
+
+
+
+            <h2>Resume Perhitungan Zakat</h2>
+            <label for="zakat_perbulan">Zakat Penghasilan per Bulan</label>
+            <input id="zakat_perbulan" type="text" name="zakat_perbulan" value="0"/>
+
+            <label for="zakat_maal_perbulan">Zakat Maal yang dibayarkan per Bulan</label>
+            <input id="zakat_maal_perbulan" type="text" name="zakat_maal_perbulan" value="0" disabled/>
+
+            <label for="total_zakat_perbulan">Total Pembayaran Zakat Saya per Bulan</label>
+            <input id="total_zakat_perbulan" type="text" name="total_zakat_perbulan" disabled value="0"/>
+
+
+        </form>
 
     </div>
     <div data-role="panel" data-display="push" data-theme="b" id="nav-panel">
