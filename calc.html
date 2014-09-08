@@ -8,7 +8,9 @@
 
 
     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+    <link rel="stylesheet" href="assets/css/jquery.mobile-1.4.3.min.css" />
     <script src="assets/js/jquery-1.11.1.min.js"></script>
+    <script src="assets/js/jquery.mobile-1.4.3.min.js"></script>
     <script>
 
         var regex = new Array(),
@@ -61,23 +63,8 @@
             document.form1.elements[b].value = toformat;
         }
 
-        var deviceReadyDeferred = $.Deferred();
-        var jqmReadyDeferred = $.Deferred();
 
-        document.addEventListener("deviceReady", deviceReady, false);
-
-        function deviceReady() {
-            deviceReadyDeferred.resolve();
-        }
-
-        $(document).on("mobileinit", function () {
-            jqmReadyDeferred.resolve();
-        });
-
-        $.when(deviceReadyDeferred, jqmReadyDeferred).then(doWhenBothFrameworksLoaded);
-
-        function doWhenBothFrameworksLoaded() {
-
+        $( document ).on( "pageinit", "#calc", function( event ) {
             // Fungsi untuk nisab penghasilan
             function hitung_nisab() {
                 var gaji_perbulan = $('#gaji').val();
@@ -98,16 +85,15 @@
                 $('#jml_zakat_penghasilan').text(jumlah_wajib_zakat);
             }
 
-            $('#gaji, #gaji_tambahan, #kebutuhan').on('keyup',function () {
+            $('#gaji, #gaji_tambahan, #kebutuhan').keyup(function () {
                 hitung_nisab();
             });
 
             //Jquery kalkulator
             //Fungsi untuk membersihkan (.)
 
-            
             //Jquery for kalkulator
-            $('#gaji, #gaji_tambahan, #kebutuhan, #hrg_beras, #hrg_emas, #hutang_tempo , .sum_maal').on('keyup',function () {
+            $('#gaji, #gaji_tambahan, #kebutuhan, #hrg_beras, #hrg_emas, #hutang_tempo , .sum_maal').keyup(function () {
 
                 //Perhitungan Zakat penghasilan
                 gaji_saya = $('#gaji').val();
@@ -185,10 +171,11 @@
 
             });
             //End jquery kalkulator
-        }
+        });
+
+
+
     </script>
-    <link rel="stylesheet" href="assets/css/jquery.mobile-1.4.3.min.css" />
-    <script src="assets/js/jquery.mobile-1.4.3.min.js"></script>
     <style>
         body {
             background: url(assets/images/bg.png) repeat fixed;
