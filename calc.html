@@ -64,8 +64,9 @@
         }
 
 
-        $( document ).on( "pageinit", "#calc", function( event ) {
+        $( document ).ready(function( event ) {
             // Fungsi untuk nisab penghasilan
+
             function hitung_nisab() {
                 var gaji_perbulan = $('#gaji').val();
                 var penghasilan_lain = $('#gaji_tambahan').val();
@@ -85,15 +86,7 @@
                 $('#jml_zakat_penghasilan').text(jumlah_wajib_zakat);
             }
 
-            $('#gaji, #gaji_tambahan, #kebutuhan').keyup(function () {
-                hitung_nisab();
-            });
-
-            //Jquery kalkulator
-            //Fungsi untuk membersihkan (.)
-
-            //Jquery for kalkulator
-            $('#gaji, #gaji_tambahan, #kebutuhan, #hrg_beras, #hrg_emas, #hutang_tempo , .sum_maal').keyup(function () {
+            function kalkulatorZakat(){
 
                 //Perhitungan Zakat penghasilan
                 gaji_saya = $('#gaji').val();
@@ -169,8 +162,13 @@
                 c_total_zakat_perbulan = rubah(total_zakat_perbulan);
                 $('#total_zakat_perbulan').val(c_total_zakat_perbulan);
 
-            });
-            //End jquery kalkulator
+            };
+
+            function eventHandler(){
+                kalkulatorZakat();
+                hitung_nisab();
+            }
+
         });
 
 
@@ -202,13 +200,13 @@
 
             <h2>Penghasilan</h2>
             <label for="gaji">Gaji per Bulan</label>
-            <input id="gaji" type="text" name="gaji" value="0"/>
+            <input id="gaji" onkeyup="eventHandler()" type="text" name="gaji" value="0"/>
 
             <label for="gaji_tambahan">Penghasilan Tambahan per Bulan</label>
-            <input id="gaji_tambahan" type="text" name="gaji_tambahan" value="0"/>
+            <input id="gaji_tambahan" onkeyup="eventHandler()" type="text" name="gaji_tambahan" value="0"/>
 
             <label for="kebutuhan">Kebutuhan per Bulan</label>
-            <input id="kebutuhan" type="text" name="kebutuhan" value="0"/>
+            <input id="kebutuhan" onkeyup="eventHandler()" type="text" name="kebutuhan" value="0"/>
 
             <label for="penghasilan">Jumlah Penghasilan per Bulan</label>
             <input id="penghasilan" type="text" name="penghasilan" value="0" disabled/>
@@ -219,7 +217,7 @@
             <h2>Nisab Zakat Penghasilan</h2>
             <p>Nisab adalah syarat jumlah minimum (ambang batas) harta yang dapat dikategorikan sebagai harta wajib zakat. Untuk penghasilan yang diwajibkan zakat adalah penghasilan yang berada diatas nisab. Nisab Zakat Penghasilan adalah setara 522 kg beras normal.</p>
             <label for="hrg_beras">Harga Beras saat ini (dalam kg)</label>
-            <input id="hrg_beras" type="text" name="hrg_beras" value="6500"/>
+            <input id="hrg_beras" onkeyup="eventHandler()" type="text" name="hrg_beras" value="6500"/>
 
             <label for="nisab_zakat_penghasilan">Nisab Zakat Penghasilan per Bulan</label>
             <input id="nisab_zakat_penghasilan" type="text" name="nisab_zakat_penghasilan" value="0" disabled/>
@@ -236,65 +234,65 @@
             <h2>Zakat Harta</h2>
             <p>Untuk harta yang diwajibkan zakat adalah harta yang berjumlah diatas nisab. Nisab Zakat Harta (Maal) adalah setara dengan 85 gr emas 24 karat.</p>
             <label for="harta_tabungan">Harta dalam bentuk Tabungan/ Giro/ Deposito</label>
-            <input id="harta_tabungan" type="text" class="sum_maal" name="harta_tabungan" value="0"/>
+            <input id="harta_tabungan" onkeyup="eventHandler()" type="text" class="sum_maal" name="harta_tabungan" value="0"/>
 
             <label for="harta_logam">Harta dalam bentuk Logam Mulia (Emas/ Perak)</label>
-            <input id="harta_logam" type="text" class="sum_maal" name="harta_logam" value="0"/>
+            <input id="harta_logam" onkeyup="eventHandler()" type="text" class="sum_maal" name="harta_logam" value="0"/>
 
             <label for="harta_surat">Harta dalam bentuk Surat Beharga</label>
-            <input id="harta_surat" type="text" class="sum_maal" name="harta_surat" value="0"/>
+            <input id="harta_surat" onkeyup="eventHandler()" type="text" class="sum_maal" name="harta_surat" value="0"/>
 
             <label for="harta_properti">Harta dalam bentuk Properti</label>
-            <input id="harta_properti" type="text" class="sum_maal" name="harta_properti" value="0"/>
+            <input id="harta_properti" onkeyup="eventHandler()" type="text" class="sum_maal" name="harta_properti" value="0"/>
 
             <label for="harta_kendaraan">Harta dalam bentuk Kendaraan</label>
-            <input id="harta_kendaraan" type="text" class="sum_maal" name="harta_kendaraan" value="0"/>
+            <input id="harta_kendaraan" onkeyup="eventHandler()" type="text" class="sum_maal" name="harta_kendaraan" value="0"/>
 
             <label for="harta_antik">Harta dalam bentuk Koleksi Seni & Barang Antik</label>
-            <input id="harta_antik" type="text" class="sum_maal" name="harta_antik" value="0"/>
+            <input id="harta_antik" onkeyup="eventHandler()" type="text" class="sum_maal" name="harta_antik" value="0"/>
 
             <label for="harta_stok">Harta dalam bentuk Stok Barang Dagangan</label>
-            <input id="harta_stok" type="text" class="sum_maal" name="harta_stok" value="0"/>
+            <input id="harta_stok" onkeyup="eventHandler()" type="text" class="sum_maal" name="harta_stok" value="0"/>
 
             <label for="harta_lain">Harta dalam bentuk Lainnya</label>
-            <input id="harta_lain" type="text" class="sum_maal" name="harta_lain" value="0"/>
+            <input id="harta_lain" onkeyup="eventHandler()" type="text" class="sum_maal" name="harta_lain" value="0"/>
 
             <label for="harta_piutang">Harta dalam bentuk Piutang Lancar</label>
-            <input id="harta_piutang" class="sum_maal" type="text" name="harta_piutang" value="0"/>
+            <input id="harta_piutang" onkeyup="eventHandler()" class="sum_maal" type="text" name="harta_piutang" value="0"/>
 
             <label for="jml_harta">Jumlah Harta</label>
-            <input id="jml_harta" type="text" name="jml_harta" value="0" disabled/>
+            <input id="jml_harta" onkeyup="eventHandler()" type="text" name="jml_harta" value="0" disabled/>
 
             <label for="hutang_tempo">Hutang Jatuh Tempo Saat Membayar Kewajiban Zakat</label>
-            <input id="hutang_tempo" type="text" name="hutang_tempo" value="0"/>
+            <input id="hutang_tempo" onkeyup="eventHandler()" type="text" name="hutang_tempo" value="0"/>
 
             <label for="jml_harta_zakat">Jumlah Harta yang Terhitung Zakat</label>
-            <input id="jml_harta_zakat" type="text" name="jml_harta_zakat" value="0" disabled/>
+            <input id="jml_harta_zakat" onkeyup="eventHandler()" type="text" name="jml_harta_zakat" value="0" disabled/>
 
 
 
             <h2>Nisab Zakat Harta (Maal)</h2>
             <p>Untuk harta yang diwajibkan zakat adalah harta yang berjumlah diatas nisab. Nisab Zakat Harta (Maal) adalah setara dengan 85 gr emas 24 karat.</p>
             <label for="hrg_emas">Harga Emas saat ini (dalam g)</label>
-            <input id="hrg_emas" type="text" name="hrg_emas" value="530000"/>
+            <input id="hrg_emas" onkeyup="eventHandler()" type="text" name="hrg_emas" value="530000"/>
 
             <label for="nisab_zakat_maal">Besarnya Nisab Zakat Maal per Tahun</label>
-            <input id="nisab_zakat_maal" type="text" name="nisab_zakat_maal" value="0" disabled/>
+            <input id="nisab_zakat_maal" onkeyup="eventHandler()" type="text" name="nisab_zakat_maal" value="0" disabled/>
 
             <label for="wajib_maal">Wajib Bayar Zakat Maal</label>
-            <input id="wajib_maal" type="text" name="wajib_maal" disabled/>
+            <input id="wajib_maal" onkeyup="eventHandler()" type="text" name="wajib_maal" disabled/>
 
             <label for="jml_zakat_maal_thn">Jumlah Zakat Maal per Tahun</label>
-            <input id="jml_zakat_maal_thn" type="text" name="jml_zakat_maal_thn" value="0" disabled/>
+            <input id="jml_zakat_maal_thn" onkeyup="eventHandler()" type="text" name="jml_zakat_maal_thn" value="0" disabled/>
 
             <label for="jml_zakat_maal_bln">Jumlah Zakat Maal per Bulan</label>
-            <input id="jml_zakat_maal_bln" type="text" name="jml_zakat_maal_bln" value="0" disabled/>
+            <input id="jml_zakat_maal_bln" onkeyup="eventHandler()" type="text" name="jml_zakat_maal_bln" value="0" disabled/>
 
 
 
             <h2>Resume Perhitungan Zakat</h2>
             <label for="zakat_perbulan">Zakat Penghasilan per Bulan</label>
-            <input id="zakat_perbulan" type="text" name="zakat_perbulan" value="0"/>
+            <input id="zakat_perbulan" type="text" name="zakat_perbulan" value="0" disabled/>
 
             <label for="zakat_maal_perbulan">Zakat Maal yang dibayarkan per Bulan</label>
             <input id="zakat_maal_perbulan" type="text" name="zakat_maal_perbulan" value="0" disabled/>
