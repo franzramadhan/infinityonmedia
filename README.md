@@ -1,6 +1,4 @@
-bmh
+Infinity On Media
 ===
 
-bmh
-Aplikasi Mobile BMH
-https://build.phonegap.com/apps/1075050/install
+Infinity on Media

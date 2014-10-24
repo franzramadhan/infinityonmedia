@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <widget xmlns = "http://www.w3.org/ns/widgets"
     xmlns:gap = "http://phonegap.com/ns/1.0"
-    id        = "com.totalindo.bmh"
+    id        = "com.infinity.media"
     version   = "1.0.0">
 
-<name>BMH</name>
+<name>Infinity On Media</name>
 
 <description>
-BMH Mobile Apps
+Infinity On Media
 </description>
 
-<author href="https://franzramadhan.com" email="franz.ramadhan@gmail.com">
-Totalindo
+<author href="https://franzramadhan.com" email="info@totalindo.co.id">
+Totalindo Rekayasa Telematika
 </author>
 
-<gap:platform name="ios" />
 <gap:platform name="android" />
-<gap:platform name="winphone" />
+
 
 <plugin name="File" value="org.apache.cordova.FileUtils" />
 <plugin name="FileTransfer" value="org.apache.cordova.FileTransfer" />
 
-<icon src="assets/icon/hdpi.png" density="hdpi" />
-<icon src="assets/icon/mdpi.png" density="mdpi" />
-<icon src="assets/icon/xxhdpi.png" density="xxhdpi" />
-<icon src="assets/icon/xhdpi.png" density="xhdpi" />
-<icon src="assets/icon/xxxhdpi.png" density="xxxhdpi" />
+<icon src="assets/icon/drawable-hdpi/ic_launcher.png" density="hdpi" />
+<icon src="assets/icon/drawable-mdpi/ic_launcher.png" density="mdpi" />
+<icon src="assets/icon/drawable-xxhdpi/ic_launcher.png" density="xxhdpi" />
+<icon src="assets/icon/drawable-xhdpi/ic_launcher.png" density="xhdpi" />
+<icon src="assets/icon/drawable-xxxhdpi/ic_launcher.png" density="xxxhdpi" />
 
 
 </widget>

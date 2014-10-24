@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="assets/css/jquery.mobile-1.4.3.min.css" />
     <script src="assets/js/jquery-1.11.1.min.js"></script>
     <script src="assets/js/jquery.mobile-1.4.3.min.js"></script>
+	<script src="http://maps.google.com/maps/api/js?v=3&sensor=true&language=id"></script>
     <style>
         body {
             background: url(assets/images/bg.png) repeat fixed;
@@ -20,95 +21,183 @@
         .ui-content, .ui-btn {
             background: transparent;
         }
+	
     </style>
+	 <script>
+        var directionsDisplay;
+        var directionsService = new google.maps.DirectionsService();
+        var map;
+        var marker;
+        var markers = [];
+        var stepDisplay;
+        var markerArray = [];
+        var geocoder;
+
+        function initialize() {
+            directionsDisplay = new google.maps.DirectionsRenderer();
+            geocoder = new google.maps.Geocoder();
+            var bmh = new google.maps.LatLng(-6.295618,106.763694);
+            var myOptions = {
+                zoom: 15,
+                center: bmh,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+
+            //set value for location
+            var myloc = document.getElementById('mylocation');
+            if(navigator.geolocation){
+                navigator.geolocation.getCurrentPosition(function(position){
+                    myloc.value = position.coords.latitude+','+position.coords.longitude;
+                })
+            }
+
+            // Instantiate an info window to hold step text.
+            stepDisplay = new google.maps.InfoWindow();
+
+            addMarker(bmh);
+
+            directionsDisplay.setMap(map);
+        }
+
+        // Sets the map on all markers in the array.
+        function setAllMap(map) {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(map);
+            }
+        }
+
+        // Removes the markers from the map, but keeps them in the array.
+        function clearMarkers() {
+            setAllMap(null);
+        }
+
+        // Shows any markers currently in the array.
+        function showMarkers() {
+            setAllMap(map);
+        }
+
+        // Deletes all markers in the array by removing references to them.
+        function deleteMarkers() {
+            clearMarkers();
+            markers = [];
+        }
+
+
+        function addMarker(location) {
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map
+            });
+            markers.push(marker);
+        }
+
+
+        function calcRoute() {
+            var selectedMode = document.getElementById('mode').value;
+            // First, remove any existing markers from the map.
+            for (var i = 0; i < markerArray.length; i++) {
+                markerArray[i].setMap(null);
+            }
+            // Now, clear the array itself.
+            markerArray = [];
+            // Retrieve the start and end locations and create
+            // a DirectionsRequest using WALKING directions.
+            var start = document.getElementById('start').value;
+            var end = document.getElementById('end').value;
+            var request = {
+                origin: start,
+                destination: end,
+                travelMode: google.maps.TravelMode[selectedMode]
+            };
+            clearMarkers();
+            // Route the directions and pass the response to a
+            // function to create markers for each step.
+            directionsService.route(request, function(response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    var warnings = document.getElementById('warnings_panel');
+                    warnings.innerHTML = '<b>' + response.routes[0].warnings + '</b>';
+                    directionsDisplay.setDirections(response);
+                    showSteps(response);
+                }
+            });
+
+        }
+
+        function showSteps(directionResult) {
+            // For each step, place a marker, and add the text to the marker's
+            // info window. Also attach the marker to an array so we
+            // can keep track of it and remove it when calculating new
+            // routes.
+            var myRoute = directionResult.routes[0].legs[0];
+
+            for (var i = 0; i < myRoute.steps.length; i++) {
+                var marker = new google.maps.Marker({
+                    position: myRoute.steps[i].start_location,
+                    map: map
+                });
+                attachInstructionText(marker, myRoute.steps[i].instructions);
+                markerArray[i] = marker;
+            }
+        }
+
+        function attachInstructionText(marker, text) {
+            google.maps.event.addListener(marker, 'click', function() {
+                // Open an info window when the marker is clicked on,
+                // containing the text of the step.
+                stepDisplay.setContent(text);
+                stepDisplay.open(map, marker);
+            });
+        }
+
+
+        $(document).on("pageinit","#donate", function () {
+            initialize();
+        });
+
+    </script>
 </head>
 <body>
 <!--donatur-->
 
 <div id="donate" data-role="page" class="jqm-demos ui-responsive-panel">
     <div data-role="header">
-        <h1>Layanan Donatur</h1>
+        <h1>Our Office</h1>
         <a href="#nav-panel" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
     <div role="main" class="ui-content jqm-content jqm-fullwidth">
-        <form action="#">
-            <div>
-                <label for="nama_lengkap">Nama Lengkap</label>
-                <input type="text" name="nama_lengkap" id="nama_lengkap"/>
-            </div>
-            <div>
-                <label for="alamat">Alamat</label>
-                <textarea name="alamat" id="alamat" cols="30" rows="10"></textarea>
-            </div>
-            <div>
-                <label for="kota">Kota</label>
-                <select name="kota" id="kota">
-                    <option value="">---</option><option value="Banda Aceh">Banda Aceh</option><option value="Medan">Medan</option><option value="Bandar Lampung">Bandar Lampung</option><option value="Palembang">Palembang</option><option value="Bengkulu">Bengkulu</option><option value="DKI Jakarta">DKI Jakarta</option><option value="Bandung">Bandung</option><option value="DI Yogyakarta">DI Yogyakarta</option><option value="Semarang">Semarang</option><option value="Surabaya">Surabaya</option><option value="Denpasar">Denpasar</option><option value="Makassar">Makassar</option><option value="Palu">Palu</option><option value="Mamuju">Mamuju</option><option value="Manado">Manado</option><option value="Kendari">Kendari</option><option value="Kupang">Kupang</option><option value="Mataram">Mataram</option><option value="Jayapura">Jayapura</option><option value="Kota Lain">Kota Lain</option>
-                </select>
-            </div>
-            <div>
-                <label for="telp">Telepon/HP</label>
-                <input type="text" name="telp" id="telp"/>
-            </div>
-            <div>
-                <label for="email">Email</label>
-                <input type="email" name="email" id="email"/>
-            </div>
-            <div>
-                <label for="donasi">Jumlah Donasi</label>
-                <input type="text" name="donasi" id="donasi"/>
-            </div>
-            <div>
-                <label for="label">Transfer Via</label>
-                <label for="trf_via"><input type="radio" name="trf_via" id="trf_via" value="setor_tunai"/> Setor Tunai</label>
-                <label for="trf_via"><input type="radio" name="trf_via" id="trf_via" value="auto_debt" />Auto Debit</label>
-                <label for="trf_via"><input type="radio" name="trf_via" id="trf_via" value="atm" />ATM</label>
-                <label for="trf_via"><input type="radio" name="trf_via" id="trf_via" value="ebank" />E-Banking</label>
-            </div>
-            <div>
-                <label for="program">Program</label>
-                <select name="program" class="wpcf7-form-control wpcf7-select wpcf7-validates-as-required form-control" id="program" aria-required="true" aria-invalid="false"><option value="Untuk Zakat">Untuk Zakat</option><option value="Untuk Infaq">Untuk Infaq</option><option value="Untuk Wakaf">Untuk Wakaf</option><option value="Untuk Qurban">Untuk Qurban</option></select>
-            </div>
-            <div>
-                <select name="menu-zakat" class="wpcf7-form-control wpcf7-select form-control" id="menu-zakat" aria-invalid="false"><option value="">---</option><option value="BNI 8924.912">BNI 8924.912</option><option value="BRI SYARIAH 1004.088.267">BRI SYARIAH 1004.088.267</option><option value="BSM 700.611.3413">BSM 700.611.3413</option><option value="CIMB NIAGA SYARIAH 5200.100.117.001">CIMB NIAGA SYARIAH 5200.100.117.001</option><option value="DKI SYARIAH 7047.000.656">DKI SYARIAH 7047.000.656</option><option value="MANDIRI 006.000.1162.753">MANDIRI 006.000.1162.753</option><option value="MUAMALAT 305.00.238.15">MUAMALAT 305.00.238.15</option><option value="PERMATABANK SYARIAH 971.000.635">PERMATABANK SYARIAH 971.000.635</option></select>
-            </div>
-            <div>
-                <fieldset class="ui-grid-a">
-                    <label for="">Tanggal Transfer</label>
-                    <div class="ui-block-a" style="width: 33%"><select name="tanggal"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option></select>
-                    </div>
-                    <div class="ui-block-b" style="width: 33%"><select name="bulan"><option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option><option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option><option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option><option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option></select></div>
-                    <div class="ui-block-c" style="width: 33%"><select name="tahun"><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option></select></div>
-                </fieldset>
-            </div>
-            <div>
-                <label for="bukti_trf">Bukti Transfer</label>
-                <input type="file" name="bukti_trf"/>
-            </div>
-            <div>
-                <label for="keterangan">Keterangan</label>
-                <input type="text" name="keterangan"/>
-            </div>
-            <div>
-                <label for="keyword">Kata Kunci</label>
-                <input type="text" name="keyword"/>
-            </div>
-            <div>
-                <input type="submit" value="kirim"/>
-            </div>
-        </form>
+   <div id="map_canvas"
+            style="display:block;
+            overflow:hidden;
+            position:relative;
+            border:1px solid #aaaaaa;
+            width: 100%;
+            height: 400px;">
+        </div>  
+	<div><h3><hr />Our Location<hr /></h3>
+	<h4>Located In Beautiful Tangerang</h4>
+<p>Pondok Karya permai BBII G 53, Tangerang Selatan, Banten 15412<br />
+Telp : 08128760381<br />
+Email : infinityonmedia@gmail.com<br />
+Web : www.infinityonmedia.com</p>
+	</div>	
+	<div><h3><hr />Connect With Us<hr /></h3>
+	<a class="facebook" href="https://www.facebook.com/infinityonmedia" target="_self">Facebook</a>
+	<a class="twitter" href="https://twitter.com/InfinityonMedia" target="_self">Twitter</a>
+	<a class="google" href="https://plus.google.com/u/0/b/110354035803461570084/110354035803461570084/videos" target="_self">Google</a>
+	<a class="youtube" href="http://www.youtube.com/channel/UCSCvMn5KnoSVO_niTN62zkQ" target="_self">Youtube</a>
+	</div>
     </div>
     <div data-role="panel" data-display="push" data-theme="b" id="nav-panel">
-        <ul data-role="listview">
-            <li data-icon="delete"><a href="#" data-rel="close">Close menu</a></li>
-            <li><a href="index.html" data-transition="slide">Profil</a></li>
-            <li><a href="news.html" data-transition="slide">Berita</a></li>
-            <li><a href="zis.html" data-transition="slide">ZIS</a></li>
-            <li><a href="qurban.html" data-transition="slide">Qurban</a></li>
-            <li><a href="calc.html" data-transition="slide">Kalkulator Zakat</a></li>
-            <li><a href="donasi.html" data-transition="slide">Layanan Donatur</a></li>
-        </ul>
-    </div><!-- /panel -->
+                <ul data-role="listview">
+                    <li data-icon="delete"><a href="#" data-rel="close">Close menu</a></li>
+                    <li><a href="index.html" data-transition="slide">Home</a></li>
+                    <li><a href="about.html" data-transition="slide">About Us</a></li>
+                    <li><a href="portofolio.html" data-transition="slide">Portofolio</a></li>
+                    <li><a href="service.html" data-transition="slide">Our Service</a></li>
+                    <li><a href="donasi.html" data-transition="slide">Our Office</a></li>
+                </ul>
+            </div><!-- /panel -->
 </div>
 </body>
 </html>
